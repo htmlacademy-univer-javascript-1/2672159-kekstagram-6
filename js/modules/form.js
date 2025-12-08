@@ -8,19 +8,6 @@ const hashtagField = form.querySelector('.text__hashtags');
 
 let pristine;
 
-const openForm = () => {
-  overlay.classList.remove('hidden');
-  body.classList.add('modal-open');
-  document.addEventListener('keydown', onDocumentKeydown);
-};
-
-const closeForm = () => {
-  overlay.classList.add('hidden');
-  body.classList.remove('modal-open');
-  document.removeEventListener('keydown', onDocumentKeydown);
-  resetForm();
-};
-
 const resetForm = () => {
   form.reset();
   fileInput.value = '';
@@ -28,14 +15,6 @@ const resetForm = () => {
   if (pristine) {
     pristine.reset();
   }
-};
-
-const onFileInputChange = () => {
-  openForm();
-};
-
-const onCancelButtonClick = () => {
-  closeForm();
 };
 
 const onFieldKeydown = (evt) => {
@@ -46,8 +25,24 @@ const onFieldKeydown = (evt) => {
 
 const onDocumentKeydown = (evt) => {
   if (evt.key === 'Escape' && !evt.target.matches('.text__description, .text__hashtags')) {
-    closeForm();
+    overlay.classList.add('hidden');
+    body.classList.remove('modal-open');
+    document.removeEventListener('keydown', onDocumentKeydown);
+    resetForm();
   }
+};
+
+const onFileInputChange = () => {
+  overlay.classList.remove('hidden');
+  body.classList.add('modal-open');
+  document.addEventListener('keydown', onDocumentKeydown);
+};
+
+const onCancelButtonClick = () => {
+  overlay.classList.add('hidden');
+  body.classList.remove('modal-open');
+  document.removeEventListener('keydown', onDocumentKeydown);
+  resetForm();
 };
 
 const onFormSubmit = (evt) => {
@@ -58,8 +53,12 @@ const onFormSubmit = (evt) => {
   }
 };
 
-const initForm = (validationModule) => {
+const initForm = (validationModule, scaleEffectModule) => {
   pristine = validationModule.initValidation(form);
+
+  if (scaleEffectModule) {
+    scaleEffectModule.initScaleEffect();
+  }
 
   fileInput.addEventListener('change', onFileInputChange);
   cancelButton.addEventListener('click', onCancelButtonClick);

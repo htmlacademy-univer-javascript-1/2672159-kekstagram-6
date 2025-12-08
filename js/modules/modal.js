@@ -1,12 +1,5 @@
 const body = document.body;
 
-const openModal = (modal) => {
-  modal.classList.remove('hidden');
-  body.classList.add('modal-open');
-
-  document.addEventListener('keydown', onDocumentKeydown);
-};
-
 const closeModal = (modal) => {
   modal.classList.add('hidden');
   body.classList.remove('modal-open');
@@ -21,6 +14,13 @@ const onDocumentKeydown = (evt) => {
       closeModal(openModalElement);
     }
   }
+};
+
+const openModal = (modal) => {
+  modal.classList.remove('hidden');
+  body.classList.add('modal-open');
+
+  document.addEventListener('keydown', onDocumentKeydown);
 };
 
 export { closeModal, openModal };

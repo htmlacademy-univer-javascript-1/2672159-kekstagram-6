@@ -13,7 +13,10 @@ renderThumbnails(pictures);
 
 import { initForm } from './modules/form.js';
 import { initValidation } from './modules/validation.js';
+import { initScaleEffect, destroyScaleEffect } from './modules/scale-effect.js';
+
+import '../vendor/nouislider/nouislider.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-  initForm({ initValidation });
+  initForm({ initValidation }, { initScaleEffect, destroyScaleEffect });
 });
