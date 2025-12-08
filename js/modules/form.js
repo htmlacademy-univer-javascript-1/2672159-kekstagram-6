@@ -1,12 +1,17 @@
+import { sendData } from './api.js';
+import { showSuccessMessage, showErrorMessage } from './messages.js';
+
 const body = document.body;
 const form = document.querySelector('.img-upload__form');
 const fileInput = form.querySelector('.img-upload__input');
 const overlay = form.querySelector('.img-upload__overlay');
 const cancelButton = form.querySelector('.img-upload__cancel');
 const commentField = form.querySelector('.text__description');
-const hashtagField = form.querySelector('.text__hashtags');
+const hashtagField = document.querySelector('.text__hashtags');
+const submitButton = form.querySelector('.img-upload__submit');
 
 let pristine;
+let scaleEffectModule;
 
 const resetForm = () => {
   form.reset();
@@ -14,6 +19,11 @@ const resetForm = () => {
 
   if (pristine) {
     pristine.reset();
+  }
+
+  if (scaleEffectModule && scaleEffectModule.resetScale && scaleEffectModule.resetEffects) {
+    scaleEffectModule.resetScale();
+    scaleEffectModule.resetEffects();
   }
 };
 
@@ -25,10 +35,7 @@ const onFieldKeydown = (evt) => {
 
 const onDocumentKeydown = (evt) => {
   if (evt.key === 'Escape' && !evt.target.matches('.text__description, .text__hashtags')) {
-    overlay.classList.add('hidden');
-    body.classList.remove('modal-open');
-    document.removeEventListener('keydown', onDocumentKeydown);
-    resetForm();
+    closeForm();
   }
 };
 
@@ -38,25 +45,53 @@ const onFileInputChange = () => {
   document.addEventListener('keydown', onDocumentKeydown);
 };
 
-const onCancelButtonClick = () => {
+const closeForm = () => {
   overlay.classList.add('hidden');
   body.classList.remove('modal-open');
   document.removeEventListener('keydown', onDocumentKeydown);
   resetForm();
 };
 
-const onFormSubmit = (evt) => {
+const onCancelButtonClick = () => {
+  closeForm();
+};
+
+const blockSubmitButton = () => {
+  submitButton.disabled = true;
+  submitButton.textContent = 'Публикую...';
+};
+
+const unblockSubmitButton = () => {
+  submitButton.disabled = false;
+  submitButton.textContent = 'Опубликовать';
+};
+
+const onFormSubmit = async (evt) => {
   evt.preventDefault();
 
-  if (pristine.validate()) {
-    form.submit();
+  if (!pristine.validate()) {
+    return;
+  }
+
+  blockSubmitButton();
+
+  try {
+    const formData = new FormData(evt.target);
+    await sendData(formData);
+    showSuccessMessage();
+    closeForm();
+  } catch {
+    showErrorMessage();
+  } finally {
+    unblockSubmitButton();
   }
 };
 
-const initForm = (validationModule, scaleEffectModule) => {
+const initForm = (validationModule, scaleModule) => {
   pristine = validationModule.initValidation(form);
+  scaleEffectModule = scaleModule;
 
-  if (scaleEffectModule) {
+  if (scaleEffectModule && scaleEffectModule.initScaleEffect) {
     scaleEffectModule.initScaleEffect();
   }
 
@@ -67,4 +102,4 @@ const initForm = (validationModule, scaleEffectModule) => {
   form.addEventListener('submit', onFormSubmit);
 };
 
-export { initForm };
+export { initForm, closeForm };
