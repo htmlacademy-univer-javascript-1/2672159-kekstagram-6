@@ -58,8 +58,12 @@ const onFormSubmit = (evt) => {
   }
 };
 
-const initForm = (validationModule) => {
+const initForm = (validationModule, scaleEffectModule) => {
   pristine = validationModule.initValidation(form);
+
+  if (scaleEffectModule) {
+    scaleEffectModule.initScaleEffect();
+  }
 
   fileInput.addEventListener('change', onFileInputChange);
   cancelButton.addEventListener('click', onCancelButtonClick);
@@ -68,4 +72,4 @@ const initForm = (validationModule) => {
   form.addEventListener('submit', onFormSubmit);
 };
 
-export { initForm };
+export { initForm, closeForm, resetForm };
