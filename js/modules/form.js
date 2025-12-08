@@ -27,15 +27,22 @@ const resetForm = () => {
   }
 };
 
+function onDocumentKeydown(evt) {
+  if (evt.key === 'Escape' && !evt.target.matches('.text__description, .text__hashtags')) {
+    closeForm();
+  }
+}
+
+function closeForm() {
+  overlay.classList.add('hidden');
+  body.classList.remove('modal-open');
+  document.removeEventListener('keydown', onDocumentKeydown);
+  resetForm();
+}
+
 const onFieldKeydown = (evt) => {
   if (evt.key === 'Escape') {
     evt.stopPropagation();
-  }
-};
-
-const onDocumentKeydown = (evt) => {
-  if (evt.key === 'Escape' && !evt.target.matches('.text__description, .text__hashtags')) {
-    closeForm();
   }
 };
 
@@ -43,13 +50,6 @@ const onFileInputChange = () => {
   overlay.classList.remove('hidden');
   body.classList.add('modal-open');
   document.addEventListener('keydown', onDocumentKeydown);
-};
-
-const closeForm = () => {
-  overlay.classList.add('hidden');
-  body.classList.remove('modal-open');
-  document.removeEventListener('keydown', onDocumentKeydown);
-  resetForm();
 };
 
 const onCancelButtonClick = () => {
@@ -80,7 +80,7 @@ const onFormSubmit = async (evt) => {
     await sendData(formData);
     showSuccessMessage();
     closeForm();
-  } catch {
+  } catch (error) {
     showErrorMessage();
   } finally {
     unblockSubmitButton();
