@@ -1,42 +1,15 @@
-// Функция для проверки длины строки
-function checkStringLength(string, maxLength) {
-  return string.length <= maxLength;
-}
-
-// Функция для проверки, является ли строка палиндромом
-function isPalindrome(string) {
-  const normalizedString = string.replaceAll(' ', '').toLowerCase();
-
-  let reversedString = '';
-
-  for (let i = normalizedString.length - 1; i >= 0; i--) {
-    reversedString += normalizedString[i];
-  }
-
-  return normalizedString === reversedString;
-}
-
-export { checkStringLength, isPalindrome };
-
-function isMeetingWithinWorkHours(workStart, workEnd, meetingStart, meetingDuration) {
-  // Функция для преобразования времени в минуты
-  function timeToMinutes(time) {
+const isMeetingWithinWorkingHours = (startWorkDay, endWorkDay, startMeeting, meetingDuration) => {
+  const timeToMinutes = (time) => {
     const [hours, minutes] = time.split(':').map(Number);
     return hours * 60 + minutes;
-  }
+  };
 
-  const workStartMinutes = timeToMinutes(workStart);
-  const workEndMinutes = timeToMinutes(workEnd);
-  const meetingStartMinutes = timeToMinutes(meetingStart);
+  const startWorkMinutes = timeToMinutes(startWorkDay);
+  const endWorkMinutes = timeToMinutes(endWorkDay);
+  const startMeetingMinutes = timeToMinutes(startMeeting);
+  const endMeetingMinutes = startMeetingMinutes + meetingDuration;
 
-  const meetingEndMinutes = meetingStartMinutes + meetingDuration;
+  return startMeetingMinutes >= startWorkMinutes && endMeetingMinutes <= endWorkMinutes;
+};
 
-  return meetingStartMinutes >= workStartMinutes &&
-         meetingEndMinutes <= workEndMinutes;
-}
-
-isMeetingWithinWorkHours('08:00', '17:30', '14:00', 90); // true
-isMeetingWithinWorkHours('8:0', '10:0', '8:0', 120);     // true
-isMeetingWithinWorkHours('08:00', '14:30', '14:00', 90); // false
-isMeetingWithinWorkHours('14:00', '17:30', '08:0', 90);  // false
-isMeetingWithinWorkHours('8:00', '17:30', '08:00', 900); // false
+export { isMeetingWithinWorkingHours };

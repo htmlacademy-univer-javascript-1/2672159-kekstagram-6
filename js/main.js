@@ -1,23 +1,28 @@
-import { renderThumbnails } from './thumbnails.js';
-import { showFilters, setFilters } from './filters.js';
+import { initImageUploadForm } from './form.js';
+import { renderThumbnails } from './gallery.js';
 import { getData } from './api.js';
+import { showAlert } from './utils.js';
+import { initFilters } from './filters.js';
 
-import './big-picture.js';
+const initializeApp = () => {
+  if (!window.kekstagramApp || !window.kekstagramApp.librariesLoaded || typeof window.Pristine !== 'function') {
+    setTimeout(initializeApp, 100);
+    return;
+  }
 
-import { initForm } from './modules/form.js';
-import { initValidation } from './modules/validation.js';
-import { initScaleEffect } from './modules/scale-effect.js';
-import { initPhotos } from './modules/photos.js';
+  getData(
+    (photos) => {
+      renderThumbnails(photos);
+      initFilters(photos);
+    },
+    () => {
+      showAlert('Не удалось загрузить данные. Попробуйте обновить страницу');
+    }
+  );
 
-import '../vendor/nouislider/nouislider.js';
+  initImageUploadForm();
+};
 
 document.addEventListener('DOMContentLoaded', () => {
-  initForm({ initValidation }, { initScaleEffect });
-  initPhotos();
-});
-
-getData((pictures) => {
-  renderThumbnails(pictures);
-  showFilters();
-  setFilters(pictures);
+  initializeApp();
 });
