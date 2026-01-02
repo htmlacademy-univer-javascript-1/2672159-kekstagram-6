@@ -1,4 +1,5 @@
 import { isPhotoLiked, togglePhotoLike } from './liked-state.js';
+import { isEscapeKey } from './utils.js';
 
 const bigPictureElement = document.querySelector('.big-picture');
 const bodyElement = document.querySelector('body');
@@ -85,7 +86,7 @@ const onLikeClick = () => {
 let closeBigPicture = null;
 
 const onEscKeyDown = (evt) => {
-  if (evt.key === 'Escape') {
+  if (isEscapeKey(evt)) {
     closeBigPicture();
   }
 };
