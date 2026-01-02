@@ -5,11 +5,6 @@ import { showAlert } from './utils.js';
 import { initFilters } from './filters.js';
 
 const initializeApp = () => {
-  if (!window.kekstagramApp || !window.kekstagramApp.librariesLoaded || typeof window.Pristine !== 'function') {
-    setTimeout(initializeApp, 100);
-    return;
-  }
-
   getData(
     (photos) => {
       renderThumbnails(photos);
